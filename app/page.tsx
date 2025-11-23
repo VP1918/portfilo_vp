@@ -90,11 +90,13 @@ const Portfolio = () => {
       </div>
 
       {/* Navigation */}
-      <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-slate-950/70 backdrop-blur-md border-b border-white/20 py-4' : 'bg-transparent py-6'}`}>
+      <nav className={`fixed w-full z-50 transition-all duration-500 ${scrolled ? 'bg-white/5 dark:bg-black/20 backdrop-blur-2xl border-b border-white/10 shadow-2xl shadow-black/30 py-4' : 'bg-transparent py-6'}`}>
         <div className="max-w-6xl mx-auto px-6 flex justify-between items-center">
-          <div className="text-xl font-bold text-slate-100 tracking-tighter flex items-center gap-2 cursor-pointer" onClick={() => scrollTo('home')}>
-            <Terminal className="w-6 h-6 text-cyan-400" />
-            <span>VISHVA<span className="text-cyan-400">.VP</span></span>
+          <div className="text-xl font-bold text-white tracking-tight flex items-center gap-3 cursor-pointer" onClick={() => scrollTo('home')}>
+            <div className="p-2.5 rounded-full bg-white/5 border border-white/10">
+              <Terminal className="w-5 h-5 text-white" strokeWidth={1.5} />
+            </div>
+            <span>VISHVA<span className="text-white/60">.VP</span></span>
           </div>
 
           {/* Desktop Nav */}
@@ -107,7 +109,7 @@ const Portfolio = () => {
                   triggerHaptic();
                 }}
                 suppressHydrationWarning={true}
-                className={`text-sm font-medium transition-all px-3 py-2 rounded-lg hover:bg-white/5 hover:backdrop-blur-sm hover:text-cyan-400 ${activeSection === link.href.substring(1) ? 'text-cyan-400 bg-white/10 backdrop-blur-sm' : 'text-slate-400'}`}
+                className={`text-sm font-medium transition-all duration-300 px-4 py-2.5 rounded-full hover:bg-white/10 hover:scale-105 active:scale-95 ${activeSection === link.href.substring(1) ? 'text-white bg-white/10 backdrop-blur-sm' : 'text-white/60 hover:text-white'}`}
               >
                 {link.name}
               </button>
@@ -117,7 +119,7 @@ const Portfolio = () => {
                 setShowResume(true);
                 triggerHaptic();
               }}
-              className="px-4 py-2 text-sm font-medium text-slate-900 bg-gradient-to-r from-cyan-400 to-cyan-500 rounded-lg hover:from-cyan-300 hover:to-cyan-400 transition-all shadow-lg hover:shadow-cyan-400/50 backdrop-blur-sm border border-cyan-300/50"
+              className="px-5 py-2.5 text-sm font-semibold text-white bg-white/10 rounded-full hover:bg-white/20 transition-all duration-300 ease-out transform hover:scale-105 active:scale-95 shadow-lg shadow-black/20 border border-white/20 backdrop-blur-xl tracking-tight"
             >
               Resume
             </button>
@@ -179,13 +181,13 @@ const Portfolio = () => {
             <button onClick={() => {
               scrollTo('projects');
               triggerHaptic();
-            }} className="px-8 py-3 bg-white/90 backdrop-blur-md text-slate-900 rounded-lg font-semibold hover:bg-white hover:scale-105 transition-all flex items-center gap-2 w-full sm:w-auto justify-center shadow-xl hover:shadow-2xl border border-white/50" suppressHydrationWarning={true}>
-              View Projects <ChevronDown className="w-4 h-4" />
+            }} className="px-8 py-4 bg-white/10 backdrop-blur-xl text-white rounded-full font-semibold hover:bg-white/20 hover:scale-105 active:scale-95 transition-all duration-300 ease-out flex items-center gap-2 w-full sm:w-auto justify-center shadow-lg shadow-black/20 border border-white/20 tracking-tight" suppressHydrationWarning={true}>
+              View Projects <ChevronDown className="w-4 h-4" strokeWidth={1.5} />
             </button>
-            <a href="https://github.com/VP1918/Manavtelecom" target="_blank" rel="noopener noreferrer" onClick={triggerHaptic} className="px-8 py-3 bg-slate-800/40 backdrop-blur-md text-slate-100 border border-white/20 rounded-lg font-semibold hover:bg-slate-700/60 hover:border-white/30 hover:scale-105 transition-all flex items-center gap-2 w-full sm:w-auto justify-center group shadow-lg hover:shadow-xl">
-              <Github className="w-4 h-4" />
+            <a href="https://github.com/VP1918/Manavtelecom" target="_blank" rel="noopener noreferrer" onClick={triggerHaptic} className="px-8 py-4 bg-white/5 backdrop-blur-xl text-white border-2 border-white/10 rounded-full font-semibold hover:bg-white/10 hover:border-white/20 hover:scale-105 active:scale-95 transition-all duration-300 ease-out flex items-center gap-2 w-full sm:w-auto justify-center group shadow-lg shadow-black/20 tracking-tight">
+              <Github className="w-4 h-4" strokeWidth={1.5} />
               GitHub Profile
-              <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity ml-1" />
+              <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity ml-1" strokeWidth={1.5} />
             </a>
           </div>
 
@@ -218,9 +220,12 @@ const Portfolio = () => {
                 When I'm not coding, I enjoy exploring new technologies and optimizing workflows for efficiency.
               </p>
             </div>
-            <div className="bg-slate-900/40 border border-white/10 p-6 rounded-2xl backdrop-blur-md shadow-xl">
-              <h3 className="text-white font-semibold mb-4 flex items-center gap-2">
-                <Code2 className="text-cyan-400" /> Current Stack
+            <div className="bg-white/5 dark:bg-black/20 border border-white/10 p-8 rounded-[32px] backdrop-blur-2xl shadow-2xl shadow-black/40">
+              <h3 className="text-white font-semibold mb-6 flex items-center gap-3 tracking-tight">
+                <div className="p-2 rounded-full bg-white/5 border border-white/10">
+                  <Code2 className="text-white w-4 h-4" strokeWidth={1.5} />
+                </div>
+                Current Stack
               </h3>
               <div className="grid grid-cols-2 gap-4">
                 {[

@@ -1,8 +1,23 @@
 "use client";
 
-import { useState } from "react";
-import { Send, Loader2, CheckCircle2 } from "lucide-react";
+import { useState, useRef } from "react";
+import { Send, Loader2, CheckCircle2, User, Mail, MessageSquare, Shield } from "lucide-react";
 import { useHaptic } from "@/hooks/useHaptic";
+
+// Input sanitization helper
+const sanitizeInput = (input: string): string => {
+    return input
+        .replace(/[<>]/g, '') // Remove < and > to prevent HTML injection
+        .replace(/javascript:/gi, '') // Remove javascript: protocol
+        .replace(/on\w+=/gi, '') // Remove event handlers like onclick=
+        .trim();
+};
+
+// Email validation
+const isValidEmail = (email: string): boolean => {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(email);
+};
 
 export default function ContactForm() {
     const [formData, setFormData] = useState({
@@ -15,25 +30,57 @@ export default function ContactForm() {
     const [success, setSuccess] = useState(false);
     const { triggerHaptic } = useHaptic();
 
+    // Rate limiting - track last submission time
+    const lastSubmitTime = useRef<number>(0);
+    const COOLDOWN_PERIOD = 60000; // 60 seconds
+
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
     ) => {
         const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
+        // Sanitize input on change
+        setFormData((prev) => ({ ...prev, [name]: sanitizeInput(value) }));
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         triggerHaptic();
+
+        // Rate limiting check
+        const now = Date.now();
+        if (now - lastSubmitTime.current < COOLDOWN_PERIOD) {
+            const remainingTime = Math.ceil((COOLDOWN_PERIOD - (now - lastSubmitTime.current)) / 1000);
+            setError(`⏱️ Please wait ${remainingTime} seconds before sending another message.`);
+            return;
+        }
+
         setLoading(true);
         setError("");
         setSuccess(false);
 
+        // Additional validation
+        if (!isValidEmail(formData.email)) {
+            setError("Please enter a valid email address.");
+            setLoading(false);
+            return;
+        }
+
+        if (formData.name.length < 2) {
+            setError("Name must be at least 2 characters long.");
+            setLoading(false);
+            return;
+        }
+
+        if (formData.message.length < 10) {
+            setError("Message must be at least 10 characters long.");
+            setLoading(false);
+            return;
+        }
+
         const projectId = "portfolioweb-14cd5";
-        const safeName = formData.name.replace(/\s+/g, '_');
+        const safeName = formData.name.replace(/\s+/g, '_').substring(0, 50);
         const customId = `${safeName}_${Date.now()}`;
         const url = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/contacts?documentId=${customId}`;
-        console.log("Sending via REST API to:", url);
 
         try {
             const response = await fetch(url, {
@@ -43,78 +90,89 @@ export default function ContactForm() {
                 },
                 body: JSON.stringify({
                     fields: {
-                        name: { stringValue: formData.name },
-                        email: { stringValue: formData.email },
-                        message: { stringValue: formData.message },
+                        name: { stringValue: formData.name.substring(0, 50) },
+                        email: { stringValue: formData.email.substring(0, 100) },
+                        message: { stringValue: formData.message.substring(0, 2000) },
                         timestamp: { timestampValue: new Date().toISOString() },
                     },
                 }),
             });
 
             if (!response.ok) {
-                const errorBody = await response.text();
-                console.error("Full Error Body:", errorBody);
-                throw new Error(`Status ${response.status}: ${errorBody}`);
+                throw new Error(`Failed to send message. Please try again.`);
             }
 
-            const data = await response.json();
-            console.log("Success:", data);
             setSuccess(true);
             setFormData({ name: "", email: "", message: "" });
+            lastSubmitTime.current = now; // Update last submit time
         } catch (err: any) {
-            console.error("Error sending message:", err);
-            setError("Error: " + (err.message || "Something went wrong"));
+            setError("❌ " + (err.message || "Something went wrong. Please try again."));
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="relative bg-gradient-to-br from-neutral-900/60 via-slate-900/50 to-neutral-900/60 backdrop-blur-2xl border border-white/10 shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] rounded-2xl p-8 overflow-hidden group">
-            {/* Animated glass background gradient */}
-            <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-blue-500/5 opacity-50 group-hover:opacity-70 transition-opacity duration-500" />
-
-            {/* Floating glass orbs */}
-            <div className="absolute top-0 right-0 w-40 h-40 bg-cyan-400/10 rounded-full blur-3xl animate-pulse" />
-            <div className="absolute bottom-0 left-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+        <div className="relative bg-white/5 dark:bg-black/20 backdrop-blur-2xl border border-white/10 shadow-2xl shadow-black/40 rounded-[32px] p-10 overflow-hidden group hover:shadow-[0_20px_60px_rgba(0,0,0,0.5)] transition-all duration-500">
+            {/* Subtle gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-white/5 opacity-50 group-hover:opacity-70 transition-opacity duration-500 pointer-events-none" />
 
             {/* Content */}
             <div className="relative z-10">
-                <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-                    <Send className="text-cyan-400 w-5 h-5" /> Send a Message
-                </h3>
+                <div className="mb-8">
+                    <div className="inline-flex items-center gap-3 mb-3">
+                        <div className="p-3 rounded-full bg-white/5 border border-white/10">
+                            <Send className="text-white w-5 h-5" strokeWidth={1.5} />
+                        </div>
+                        <h3 className="text-2xl font-bold text-white tracking-tight">
+                            Get in Touch
+                        </h3>
+                    </div>
+                    <p className="text-white/60 text-sm tracking-tight flex items-center gap-2">
+                        <Shield className="w-4 h-4" strokeWidth={1.5} />
+                        Secure & encrypted contact form
+                    </p>
+                </div>
 
-                {error ? (
-                    <div className="p-4 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg mb-6">
+                {error && (
+                    <div className="p-4 bg-red-500/10 border border-red-400/30 text-red-300 rounded-2xl mb-6 backdrop-blur-sm">
                         {error}
                     </div>
-                ) : null}
+                )}
 
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    {/* Name Input */}
                     <div>
                         <label
                             htmlFor="name"
-                            className="block text-sm font-medium text-slate-300 mb-2"
+                            className="block text-sm font-medium text-white/80 mb-2.5 flex items-center gap-2 tracking-tight"
                         >
+                            <User className="w-4 h-4" strokeWidth={1.5} />
                             Name
+                            <span className="text-xs text-white/40 ml-auto">{formData.name.length}/50</span>
                         </label>
                         <input
                             type="text"
                             id="name"
                             name="name"
                             required
+                            minLength={2}
+                            maxLength={50}
                             value={formData.name}
                             onChange={handleChange}
-                            className="w-full px-4 py-3 rounded-lg border border-white/10 bg-slate-800/30 backdrop-blur-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400/50 focus:bg-slate-800/50 hover:bg-slate-800/40 transition-all placeholder:text-slate-500 shadow-inner"
-                            placeholder="Your Name"
+                            className="w-full px-5 py-4 rounded-2xl bg-white/5 border-transparent backdrop-blur-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-1 focus:ring-white/30 hover:bg-white/10 transition-all duration-300"
+                            placeholder="Your name"
+                            autoComplete="name"
                         />
                     </div>
 
+                    {/* Email Input */}
                     <div>
                         <label
                             htmlFor="email"
-                            className="block text-sm font-medium text-slate-300 mb-2"
+                            className="block text-sm font-medium text-white/80 mb-2.5 flex items-center gap-2 tracking-tight"
                         >
+                            <Mail className="w-4 h-4" strokeWidth={1.5} />
                             Email
                         </label>
                         <input
@@ -122,60 +180,71 @@ export default function ContactForm() {
                             id="email"
                             name="email"
                             required
+                            maxLength={100}
                             value={formData.email}
                             onChange={handleChange}
-                            className="w-full px-4 py-3 rounded-lg border border-white/10 bg-slate-800/30 backdrop-blur-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400/50 focus:bg-slate-800/50 hover:bg-slate-800/40 transition-all placeholder:text-slate-500 shadow-inner"
+                            className="w-full px-5 py-4 rounded-2xl bg-white/5 border-transparent backdrop-blur-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-1 focus:ring-white/30 hover:bg-white/10 transition-all duration-300"
                             placeholder="you@example.com"
+                            autoComplete="email"
                         />
                     </div>
 
+                    {/* Message Textarea */}
                     <div>
                         <label
                             htmlFor="message"
-                            className="block text-sm font-medium text-slate-300 mb-2"
+                            className="block text-sm font-medium text-white/80 mb-2.5 flex items-center gap-2 tracking-tight"
                         >
+                            <MessageSquare className="w-4 h-4" strokeWidth={1.5} />
                             Message
+                            <span className="text-xs text-white/40 ml-auto">{formData.message.length}/2000</span>
                         </label>
                         <textarea
                             id="message"
                             name="message"
                             required
-                            rows={4}
+                            rows={5}
+                            minLength={10}
+                            maxLength={2000}
                             value={formData.message}
                             onChange={handleChange}
-                            className="w-full px-4 py-3 rounded-lg border border-white/10 bg-slate-800/30 backdrop-blur-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400/50 focus:bg-slate-800/50 hover:bg-slate-800/40 transition-all resize-none placeholder:text-slate-500 shadow-inner"
-                            placeholder="How can I help you?"
+                            className="w-full px-5 py-4 rounded-2xl bg-white/5 border-transparent backdrop-blur-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-1 focus:ring-white/30 hover:bg-white/10 transition-all duration-300 resize-none"
+                            placeholder="Your message"
                         />
                     </div>
 
+                    {/* Submit Button */}
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full py-4 bg-gradient-to-r from-cyan-500/80 to-blue-600/80 backdrop-blur-xl text-white rounded-lg font-bold text-lg hover:from-cyan-400/90 hover:to-blue-500/90 transition-all transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-[0_8px_32px_0_rgba(6,182,212,0.37)] hover:shadow-[0_8px_32px_0_rgba(6,182,212,0.5)] border border-white/20 hover:border-white/30 relative overflow-hidden group"
+                        className="w-full py-4 px-6 bg-white/10 hover:bg-white/20 backdrop-blur-xl text-white rounded-full font-semibold text-base transition-all duration-300 ease-out transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-black/20 border border-white/20 tracking-tight"
                     >
-                        {/* Glass overlay effect */}
-                        <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-
                         {loading ? (
                             <>
-                                <Loader2 className="w-5 h-5 animate-spin" />
-                                Sending...
+                                <Loader2 className="w-5 h-5 animate-spin" strokeWidth={1.5} />
+                                Sending
                             </>
                         ) : (
                             <>
-                                <Send className="w-5 h-5" />
+                                <Send className="w-5 h-5" strokeWidth={1.5} />
                                 Send Message
                             </>
                         )}
                     </button>
 
-                    {success ? (
-                        <div className="mt-4 p-4 bg-green-500/10 border border-green-500/30 text-green-400 rounded-lg text-center font-medium flex items-center justify-center gap-2 animate-in fade-in slide-in-from-bottom-2 duration-300">
-                            <CheckCircle2 className="w-5 h-5" />
-                            ✅ Thank you! Your message has been sent.
+                    {/* Success Message */}
+                    {success && (
+                        <div className="p-4 bg-green-500/10 border border-green-400/30 text-green-300 rounded-2xl text-center font-medium flex items-center justify-center gap-2 backdrop-blur-sm">
+                            <CheckCircle2 className="w-5 h-5" strokeWidth={1.5} />
+                            Message sent successfully!
                         </div>
-                    ) : null}
+                    )}
                 </form>
+
+                {/* Security Notice */}
+                <p className="text-white/30 text-xs mt-6 text-center tracking-tight">
+                    🔒 Your information is protected by input validation and rate limiting
+                </p>
             </div>
         </div>
     );

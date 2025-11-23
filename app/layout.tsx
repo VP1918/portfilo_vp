@@ -14,8 +14,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Agentic Native | Engineering Portfolio",
-  description: "Computer Engineering Student leveraging Google Antigravity and Gemini 3.",
+  title: "Vishva Patel | Full Stack & AI Engineer",
+  description: "Building scalable AI solutions with Next.js and Firebase.",
+  openGraph: {
+    title: "Vishva Patel | Full Stack & AI Engineer",
+    description: "Building scalable AI solutions with Next.js and Firebase.",
+  },
 };
 
 export default function RootLayout({
@@ -26,7 +30,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-background text-foreground selection:bg-cyan-500/30 selection:text-cyan-200`}
+        className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased min-h-screen bg-background text-foreground selection:bg-cyan-500/30 selection:text-cyan-200`}
       >
         <ThemeProvider
           attribute="class"

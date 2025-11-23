@@ -25,6 +25,7 @@ import ContactForm from '@/components/ContactForm';
 import ResumeModal from '@/components/ResumeModal';
 import { useHaptic } from '@/hooks/useHaptic';
 import { useCursorGlow } from '@/hooks/useCursorGlow';
+import { workExperience } from '@/data/experience';
 
 const Portfolio = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -168,12 +169,12 @@ const Portfolio = () => {
             Available for hire
           </div>
 
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-slate-100 leading-tight">
-            Building <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500">Intelligent</span><br />
+          <h1 className="text-5xl md:text-7xl font-bold tracking-tighter leading-tight text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-white/60">
+            Building Intelligent<br />
             Web & App Solutions
           </h1>
 
-          <p className="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-lg text-neutral-400 max-w-2xl mx-auto leading-relaxed">
             I'm Vishva Patel, a Full Stack & AI Engineer specialized in building scalable infrastructure and systems. Previously tech information provider at <span className="text-slate-200">Manav Telecom</span>.
           </p>
 
@@ -202,21 +203,21 @@ const Portfolio = () => {
       </section>
 
       {/* About Section */}
-      <section id="about" className="py-20 px-6 relative z-10">
+      <section id="about" className="py-24 px-6 relative z-10">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl font-bold text-slate-100 mb-8 flex items-center gap-3">
             <span className="w-8 h-1 bg-cyan-500 rounded-full"></span>
             About Me
           </h2>
           <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="space-y-6 text-slate-400 leading-relaxed">
-              <p>
+            <div className="space-y-6 text-neutral-400 leading-relaxed">
+              <p className="text-lg">
                 I am an engineer who loves diving deep into low-level systems while keeping the user experience seamless. My journey started with <strong>Python</strong> and evolved into architecting full-stack solutions.
               </p>
-              <p>
+              <p className="text-lg">
                 Currently, I'm obsessed with <strong>developing web and mobile apps</strong> that solve real-world problems. I believe the future of software lies in performant, user-centric applications.
               </p>
-              <p>
+              <p className="text-lg">
                 When I'm not coding, I enjoy exploring new technologies and optimizing workflows for efficiency.
               </p>
             </div>
@@ -246,7 +247,7 @@ const Portfolio = () => {
       </section>
 
       {/* Experience Section */}
-      <section id="experience" className="py-20 px-6 bg-slate-900/20 relative z-10">
+      <section id="experience" className="py-24 px-6 bg-slate-900/20 relative z-10">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl font-bold text-slate-100 mb-12 flex items-center gap-3">
             <span className="w-8 h-1 bg-blue-500 rounded-full"></span>
@@ -254,15 +255,7 @@ const Portfolio = () => {
           </h2>
 
           <div className="relative border-l-2 border-slate-800 ml-3 space-y-12">
-            {[
-              {
-                role: "Tech Information Provider / IT Support",
-                company: "Manav Telecom",
-                period: "2021 - Present (Part-time)",
-                description: "Providing technical information and comprehensive IT support. Responsible for helping users define their requirements and delivering tailored technical solutions.",
-                tech: ["Python", "SQL", "HTML", "CSS", "JavaScript"]
-              }
-            ].map((job, idx) => (
+            {workExperience.map((job, idx) => (
               <div key={idx} className="relative pl-8 group">
                 {/* Timeline Dot */}
                 <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-slate-900 border-2 border-slate-600 group-hover:border-cyan-400 group-hover:bg-cyan-400/20 transition-colors"></div>
@@ -287,57 +280,65 @@ const Portfolio = () => {
       </section>
 
       {/* Projects Section */}
-      <section id="projects" className="py-20 px-6 relative z-10">
+      <section id="projects" className="py-24 px-6 relative z-10">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold text-slate-100 mb-12 flex items-center gap-3">
             <span className="w-8 h-1 bg-purple-500 rounded-full"></span>
             Featured Projects
           </h2>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {[
               {
                 title: "Custom Web Architecture",
                 desc: "Designed and developed responsive web applications tailored to client specifications, focusing on clean UI and efficient code structure.",
                 tags: ["HTML", "CSS", "JavaScript", "React"],
-                icon: <Brain className="w-8 h-8 text-purple-400" />,
-                color: "hover:border-purple-500/50 hover:shadow-[0_0_30px_-5px_rgba(168,85,247,0.15)]"
+                github: "https://github.com/VP1918/Manavtelecom",
+                demo: "#"
               },
               {
                 title: "Client Requirement System",
                 desc: "A Python-based solution that analyzes user inputs to suggest technical configurations, helping automate the requirements gathering process.",
                 tags: ["Python", "SQL", "Automation"],
-                icon: <Database className="w-8 h-8 text-cyan-400" />,
-                color: "hover:border-cyan-500/50 hover:shadow-[0_0_30px_-5px_rgba(6,182,212,0.15)]"
+                github: "https://github.com/VP1918/Manavtelecom",
+                demo: "#"
               },
               {
                 title: "Telecom Data Manager",
                 desc: "An internal tool created to manage and retrieve technical information efficiently, streamlining support operations.",
                 tags: ["Python", "Data Processing", "SQL"],
-                icon: <Server className="w-8 h-8 text-blue-400" />,
-                color: "hover:border-blue-500/50 hover:shadow-[0_0_30px_-5px_rgba(59,130,246,0.15)]"
+                github: "https://github.com/VP1918/Manavtelecom",
+                demo: "#"
+              },
+              {
+                title: "Portfolio Website",
+                desc: "Modern, responsive portfolio built with Next.js 14, featuring glassmorphism design, Firebase integration, and optimized performance.",
+                tags: ["Next.js", "Firebase", "Tailwind", "TypeScript"],
+                github: "https://github.com/VP1918",
+                demo: "#"
               }
             ].map((project, i) => (
-              <div key={i} className={`group bg-slate-900/40 border border-white/10 p-6 rounded-2xl backdrop-blur-md transition-all duration-300 flex flex-col hover:-translate-y-1 hover:shadow-2xl ${project.color}`}>
-                <div className="flex justify-between items-start mb-4">
-                  <div className="p-3 bg-slate-950 border border-slate-800 rounded-lg group-hover:scale-110 transition-transform">
-                    {project.icon}
-                  </div>
-                  <div className="flex gap-2">
-                    <a href="https://github.com/VP1918/Manavtelecom" target="_blank" rel="noopener noreferrer" className="text-slate-500 hover:text-white transition-colors"><Github className="w-5 h-5" /></a>
-                    <a href="#" className="text-slate-500 hover:text-white transition-colors"><ExternalLink className="w-5 h-5" /></a>
-                  </div>
-                </div>
+              <div key={i} className="group bg-neutral-900/50 border border-white/10 p-6 rounded-3xl backdrop-blur-md transition-all duration-300 hover:border-white/20 flex flex-col">
+                <h3 className="text-xl font-bold text-white mb-3">{project.title}</h3>
+                <p className="text-neutral-400 mb-4 flex-grow">{project.desc}</p>
 
-                <h3 className="text-xl font-bold text-slate-100 mb-2 group-hover:text-cyan-400 transition-colors">{project.title}</h3>
-                <p className="text-slate-400 text-sm mb-6 flex-grow">{project.desc}</p>
-
-                <div className="flex flex-wrap gap-2 mt-auto">
+                <div className="flex flex-wrap gap-2 mb-4">
                   {project.tags.map(tag => (
-                    <span key={tag} className="text-xs font-mono text-cyan-200/70 bg-cyan-900/10 px-2 py-1 rounded border border-cyan-900/20">
+                    <span key={tag} className="text-xs bg-white/5 px-2 py-1 rounded-full text-neutral-300">
                       {tag}
                     </span>
                   ))}
+                </div>
+
+                <div className="flex gap-4 mt-auto pt-4 border-t border-white/5">
+                  <a href={project.github} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-neutral-400 hover:text-white transition-colors text-sm">
+                    <Github className="w-4 h-4" strokeWidth={1.5} />
+                    Source Code
+                  </a>
+                  <a href={project.demo} className="flex items-center gap-2 text-neutral-400 hover:text-white transition-colors text-sm">
+                    <ExternalLink className="w-4 h-4" strokeWidth={1.5} />
+                    Live Demo
+                  </a>
                 </div>
               </div>
             ))}
@@ -346,25 +347,33 @@ const Portfolio = () => {
       </section>
 
       {/* Skills Section */}
-      <section id="skills" className="py-20 px-6 bg-slate-900/30 relative z-10">
+      <section id="skills" className="py-24 px-6 bg-slate-900/30 relative z-10">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl font-bold text-slate-100 mb-12 flex items-center gap-3">
             <span className="w-8 h-1 bg-emerald-500 rounded-full"></span>
             Technical Arsenal
           </h2>
 
-          <div className="space-y-8">
+          <div className="space-y-10">
             {[
-              { category: "Languages", items: ["Python", "JavaScript/TypeScript", "Go", "C++", "Rust", "SQL"] },
-              { category: "Frameworks & Libraries", items: ["React", "Next.js", "PyTorch", "TensorFlow", "FastAPI", "Node.js"] },
-              { category: "Infrastructure & Tools", items: ["Docker", "Kubernetes", "AWS", "GCP", "Terraform", "Git", "Linux"] },
-              { category: "Concepts", items: ["Distributed Systems", "System Design", "Microservices", "CI/CD", "Agile"] }
+              {
+                category: "Frontend",
+                items: ["React", "Next.js", "Tailwind CSS", "TypeScript", "JavaScript", "HTML/CSS", "Responsive Design"]
+              },
+              {
+                category: "Backend",
+                items: ["Node.js", "Python", "Go", "Firebase", "SQL", "REST APIs", "GraphQL"]
+              },
+              {
+                category: "Tools",
+                items: ["Git", "Docker", "AWS", "Vercel", "VS Code", "Figma", "Linux"]
+              }
             ].map((skillGroup) => (
               <div key={skillGroup.category}>
-                <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">{skillGroup.category}</h3>
+                <h3 className="text-lg font-bold text-white mb-4 tracking-tight">{skillGroup.category}</h3>
                 <div className="flex flex-wrap gap-3">
                   {skillGroup.items.map((skill) => (
-                    <div key={skill} className="px-4 py-2 bg-slate-800/40 border border-white/5 rounded-lg text-slate-300 hover:border-cyan-500/50 hover:bg-slate-800/60 transition-colors cursor-default backdrop-blur-sm">
+                    <div key={skill} className="px-4 py-2.5 bg-slate-800/40 border border-white/5 rounded-lg text-slate-300 hover:border-cyan-500/50 hover:bg-slate-800/60 transition-colors cursor-default backdrop-blur-sm text-sm">
                       {skill}
                     </div>
                   ))}
@@ -435,8 +444,8 @@ const Portfolio = () => {
       </section>
 
       {/* Footer */}
-      <footer className="py-8 text-center text-slate-600 text-sm bg-slate-950 relative z-10 border-t border-slate-900">
-        <p>© {new Date().getFullYear()} Vishva Patel. Built with React & Tailwind.</p>
+      <footer className="border-t border-white/10 bg-black/20 backdrop-blur-xl py-8 text-center text-neutral-500 text-sm relative z-10">
+        <p>© 2025 Vishva Patel. Built with Next.js &amp; Firebase.</p>
       </footer>
 
       <ResumeModal isOpen={showResume} onClose={() => setShowResume(false)} />

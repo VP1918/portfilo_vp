@@ -102,6 +102,22 @@ export default function ContactForm() {
                 throw new Error(`Failed to send message. Please try again.`);
             }
 
+            // --- Send Telegram Notification ---
+            const botToken = '8050131416:AAG6kkIBeAzOvukdk0SFekps3maOKN619cc';
+            const chatId = '6346052882';
+            const telegramText = `🚀 *New Portfolio Lead!*\n\n👤 *Name:* ${formData.name}\n📧 *Email:* ${formData.email}\n💬 *Message:* ${formData.message}`;
+
+            await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: chatId,
+                    text: telegramText,
+                    parse_mode: 'Markdown'
+                }),
+            });
+            // ----------------------------------
+
             setSuccess(true);
             setFormData({ name: "", email: "", message: "" });
             lastSubmitTime.current = now; // Update last submit time

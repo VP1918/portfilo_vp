@@ -18,3 +18,5 @@ const db = initializeFirestore(app, {
 });
 
 export { db };
+
+// Vercel Rebuild Trigger

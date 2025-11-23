@@ -15,7 +15,6 @@ const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 // FIX: Force Long Polling and Disable Streams to bypass Network/Antivirus blocks
 const db = initializeFirestore(app, {
     experimentalForceLongPolling: true,
-    useFetchStreams: false,
 });
 
 export { db };

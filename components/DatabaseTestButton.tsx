@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { addDocumentRest } from "@/lib/firebase-rest";
 import { Button } from "@/components/ui/button";
